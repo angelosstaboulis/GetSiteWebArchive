@@ -10,13 +10,15 @@ import WebKit
 class WebViewKit:NSObject,WKNavigationDelegate{
     var webView = WKWebView()
     var saveURL:String
-    init(saveURL: String) {
+    var loadURL:String
+    init(saveURL: String,loadURL:String) {
         self.saveURL = saveURL
+        self.loadURL = loadURL
         super.init()
         self.webView.navigationDelegate =  self
     }
-    func loadURL(url:String){
-        self.webView.load(URLRequest(url: URL(string:url)!))
+    func loadWebURL(){
+        self.webView.load(URLRequest(url: URL(string:loadURL)!))
     }
     func savePDF(){
         DispatchQueue.main.async{
@@ -35,13 +37,14 @@ class WebViewKit:NSObject,WKNavigationDelegate{
     }
 }
 class ViewController: UIViewController,WKNavigationDelegate{
-    var webView = WebViewKit(saveURL: "")
+    var webView = WebViewKit(saveURL: "", loadURL: "")
     @IBOutlet weak var txtExportURL: UITextField!
     @IBOutlet weak var txtExportFolder: UITextField!
     @IBAction func btnCreateFile(_ sender: Any) {
         DispatchQueue.main.async{
             self.webView.saveURL = self.txtExportFolder.text!
-            self.webView.loadURL(url: self.txtExportURL.text!)
+            self.webView.loadURL = self.txtExportURL.text!
+            self.webView.loadWebURL()
             self.webView.savePDF()
             self.showAlertBox()
             
